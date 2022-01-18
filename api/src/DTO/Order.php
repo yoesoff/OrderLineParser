@@ -1,10 +1,10 @@
 <?php
 namespace App\DTO;
 
-use Customer;
+use App\DTO\Customer;
+
 class Order
 {
-
     private $orderId;
     private $orderDate;
     private $customer;

@@ -2,13 +2,17 @@
 
 namespace App\Command;
 
+use App\DTO\Customer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use App\DTO\Order;
 
 class ProcessOrderCommand extends Command
 {
+    private $order;
+
     protected static $defaultName = 'app:process-order';
     protected static $defaultDescription = 'Process remote orders from remote jsonl file.';
 
@@ -38,9 +42,14 @@ class ProcessOrderCommand extends Command
 
         $orders = file(self::$url);
         foreach ($orders as $num => $order) {
-            $this->orders[$num] = json_decode($order, TRUE);
-            if (count($this->orders[$num]['items'])) {
-                $output->writeln(var_dump($this->orders[$num]['items'][0]['product']));
+            $this->orders[$num] = json_decode($order, true);
+
+            $tOrder = $this->orders[$num];
+            $customer = new Customer("22", "asda", "asdasd", "asdasd", "asdasd", "asdasd");
+            $order = new Order($tOrder["order_id"], $tOrder["order_date"], $customer, $tOrder["items"], $tOrder["discounts"], $tOrder["shipping_price"]);
+
+            if (count($tOrder['items'])) {
+                $output->writeln($order->getOrderId());
             } else {
                 $output->writeln("Empty");
             }
