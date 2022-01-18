@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\DTO\Customer;
+use App\Service\OrderService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -11,6 +12,7 @@ use App\DTO\Order;
 
 class ProcessOrderCommand extends Command
 {
+    private $orderService;
     private $order;
 
     protected static $defaultName = 'app:process-order';
@@ -20,9 +22,10 @@ class ProcessOrderCommand extends Command
 
     private $orders = array();
 
-    public function __construct()
+    public function __construct(OrderService $o)
     {
         parent::__construct();
+        $this->orderService = $o;
     }
 
     protected function configure(): void
@@ -49,7 +52,7 @@ class ProcessOrderCommand extends Command
             $order = new Order($tOrder["order_id"], $tOrder["order_date"], $customer, $tOrder["items"], $tOrder["discounts"], $tOrder["shipping_price"]);
 
             if (count($tOrder['items'])) {
-                $output->writeln($order->getOrderId());
+                $output->writeln($this->orderService->test() . $order->getOrderId());
             } else {
                 $output->writeln("Empty");
             }
