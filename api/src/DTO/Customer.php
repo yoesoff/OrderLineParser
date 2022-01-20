@@ -111,7 +111,7 @@ class Customer
     /**
      * @return mixed
      */
-    public function getShippingAddress()
+    public function getShippingAddress(): ShippingAddress
     {
         return $this->shippingAddress;
     }

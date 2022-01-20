@@ -5,12 +5,12 @@ use App\DTO\Customer;
 
 class Order
 {
-    private $orderId;
-    private $orderDate;
-    private $customer;
-    private $items;
-    private $discounts;
-    private $shippingPrice;
+    private int $orderId;
+    private string $orderDate;
+    private Customer $customer;
+    private array $items;
+    private array $discounts;
+    private float $shippingPrice;
 
     /**
      * @param $orderId

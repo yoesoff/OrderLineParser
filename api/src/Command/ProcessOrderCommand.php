@@ -12,15 +12,13 @@ use App\DTO\Order;
 
 class ProcessOrderCommand extends Command
 {
-    private $orderService;
-    private $order;
+    private OrderService $orderService;
+    private Order $order;
 
     protected static $defaultName = 'app:process-order';
     protected static $defaultDescription = 'Process remote orders from remote jsonl file.';
 
     private static $url = "https://s3-ap-southeast-2.amazonaws.com/catch-code-challenge/challenge-1-in.jsonl";
-
-    private $orders = array();
 
     public function __construct(OrderService $o)
     {
@@ -45,22 +43,21 @@ class ProcessOrderCommand extends Command
 
         $orders = file(self::$url);
         foreach ($orders as $num => $order) {
-            $this->orders[$num] = json_decode($order, true);
+            $tOrder = json_decode($order, true);
 
-            $tOrder = $this->orders[$num];
-            $customer = new Customer("22", "asda", "asdasd", "asdasd", "asdasd", "asdasd");
-            $order = new Order($tOrder["order_id"], $tOrder["order_date"], $customer, $tOrder["items"], $tOrder["discounts"], $tOrder["shipping_price"]);
+            $order = $this->orderService->buildOrder($tOrder);
 
             if (count($tOrder['items'])) {
-                $output->writeln($this->orderService->test() . $order->getOrderId());
+//                $output->writeln(var_dump($tOrder));
+                $output->writeln(var_dump($order->getCustomer()->getShippingAddress()));
             } else {
-                $output->writeln("Empty");
+                $output->writeln("<bg=red;options=bold>Empty Items</>");
             }
         }
         // demo
 
         // outputs a message followed by a "\n"
-        $output->writeln('<bg=green;options=bold>Whoa!</>');
+        $output->writeln('<bg=green;options=bold>Done!</>');
 
         return Command::SUCCESS;
     }
